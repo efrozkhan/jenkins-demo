@@ -61,11 +61,10 @@ pipeline {
             }
         }
 
-        stage('Run New Container') {
-            steps {
-                sh 'docker push efrozkhan6194/mysite:${BUILD_NUMBER}'
-            }
-        }
-
+     stage('Push Docker Image') {
+    steps {
+        sh 'docker push efrozkhan6194/mysite:${BUILD_NUMBER}'
+    }
+}
     }
 }
