@@ -66,7 +66,7 @@ pipeline {
                 sh '''
                 docker run -d -p 80:80 \
                 --name mycontainer \
-                YOUR_DOCKERHUB_USERNAME/mysite:${BUILD_NUMBER}
+                efrozkhan6194/mysite:${BUILD_NUMBER}
                 '''
             }
         }
