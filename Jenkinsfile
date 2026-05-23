@@ -63,11 +63,7 @@ pipeline {
 
         stage('Run New Container') {
             steps {
-                sh '''
-                docker run -d -p 80:80 \
-                --name mycontainer \
-                efrozkhan6194/mysite:${BUILD_NUMBER}
-                '''
+                sh 'docker push efrozkhan6194/mysite:${BUILD_NUMBER}'
             }
         }
 
