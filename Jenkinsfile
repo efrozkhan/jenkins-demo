@@ -38,7 +38,7 @@ pipeline {
                     credentialsId: 'dockerhub_creds',
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
-                )]) {
+                )}) {
 
                     sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
                 }
@@ -50,7 +50,7 @@ pipeline {
                 sh 'docker push efrozkhan6194/mysite:${BUILD_NUMBER}'
             }
         }
-
+    
         stage('Deploy to k8s') {
             steps {
                sh '''
@@ -59,5 +59,14 @@ pipeline {
               '''
             }
         }
+        stage('Update Kubernetes Image') {
+    steps {
+
+        sh '''
+        kubectl set image deployment/mysite-deployment \
+        mysite=efrozkhan6194/mysite:${BUILD_NUMBER}
+        '''
+    }
+}
     }
 }
