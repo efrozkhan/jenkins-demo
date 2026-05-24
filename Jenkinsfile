@@ -51,27 +51,13 @@ pipeline {
             }
         }
 
-        stage('Stop Old Container') {
+        stage('Deploy to k8s') {
             steps {
-                sh '''
-                docker stop mycontainer || true
-                sleep 3
-
-                docker rm -f mycontainer || true
-                sleep 5
-                '''
+               sh '''
+              kubectl apply -f k8s/deployment.yml
+              kubectl apply -f k8s/service.yml
+              '''
             }
         }
-
-        stage('Run New Container') {
-            steps {
-                sh '''
-                docker run -d -p 80:80 \
-                --name mycontainer \
-                efrozkhan6194/mysite:${BUILD_NUMBER}
-                '''
-            }
-        }
-
     }
 }
