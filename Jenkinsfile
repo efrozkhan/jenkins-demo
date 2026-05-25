@@ -73,8 +73,8 @@ pipeline {
             steps {
 
                 sh '''
-                kubectl set image deployment/mysite-deployment \
-                mysite=efrozkhan6194/mysite:${BUILD_NUMBER}
+                kubectl set image deployment/myapp-deployment \
+                myapp=efrozkhan6194/mysite:${BUILD_NUMBER}
                 '''
             }
         }
