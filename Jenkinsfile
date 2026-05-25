@@ -59,25 +59,15 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
-            steps {
+        stage('Deploy using Helm') {
+    steps {
 
-                sh '''
-                kubectl apply --validate=false -f k8s/deployment.yml
-                kubectl apply --validate=false -f k8s/service.yml
-                '''
-            }
-        }
-
-        stage('Update Kubernetes Image') {
-            steps {
-
-                sh '''
-                kubectl set image deployment/myapp-deployment \
-                myapp=efrozkhan6194/mysite:${BUILD_NUMBER}
-                '''
-            }
-        }
-
+        sh '''
+        helm upgrade --install myapp ./myapp-chart \
+        --set image.repository=efrozkhan6194/mysite \
+        --set image.tag=${BUILD_NUMBER}
+        '''
+    }
+}
     }
 }
