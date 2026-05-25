@@ -27,7 +27,11 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t efrozkhan6194/mysite:${BUILD_NUMBER} .'
+                sh '''
+                docker build \
+                -t efrozkhan6194/mysite:${BUILD_NUMBER} \
+                -t efrozkhan6194/mysite:latest .
+                '''
             }
         }
 
@@ -45,28 +49,35 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Push Docker Images') {
             steps {
-                sh 'docker push efrozkhan6194/mysite:${BUILD_NUMBER}'
-            }
-        }
-    
-        stage('Deploy to k8s') {
-            steps {
-               sh '''
-              kubectl apply -f k8s/deployment.yml
-              kubectl apply -f k8s/service.yml
-              '''
-            }
-        }
-        stage('Update Kubernetes Image') {
-    steps {
 
-        sh '''
-        kubectl set image deployment/mysite-deployment \
-        mysite=efrozkhan6194/mysite:${BUILD_NUMBER}
-        '''
-    }
-}
+                sh '''
+                docker push efrozkhan6194/mysite:${BUILD_NUMBER}
+                docker push efrozkhan6194/mysite:latest
+                '''
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+
+                sh '''
+                kubectl apply --validate=false -f k8s/deployment.yml
+                kubectl apply --validate=false -f k8s/service.yml
+                '''
+            }
+        }
+
+        stage('Update Kubernetes Image') {
+            steps {
+
+                sh '''
+                kubectl set image deployment/mysite-deployment \
+                mysite=efrozkhan6194/mysite:${BUILD_NUMBER}
+                '''
+            }
+        }
+
     }
 }
